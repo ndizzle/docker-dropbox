@@ -1,13 +1,14 @@
 FROM debian:jessie
-MAINTAINER Daniel Rodgers-Pryor <djrodgerspryor@gmail.com>
+MAINTAINER Nathan Parke <nathan.parker@gmail.com>
 ENV DEBIAN_FRONTEND noninteractive
 
 # Following 'How do I add or remove Dropbox from my Linux repository?' - https://www.dropbox.com/en/help/246
 RUN echo 'deb http://linux.dropbox.com/debian jessie main' > /etc/apt/sources.list.d/dropbox.list \
-    && apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E \
+    && sed -i 's/^deb http:\/\/deb.debian.org\/debian jessie main.*/deb http:\/\/deb.debian.org\/debian jessie main contrib/' /etc/apt/sources.list \
+    && apt-key adv --keyserver p80.pool.sks-keyservers.net --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E \
     && apt-get -qqy update \
     # Note 'ca-certificates' dependency is required for 'dropbox start -i' to succeed
-    && apt-get -qqy install ca-certificates curl python-gpgme dropbox python3 \
+    && apt-get -qqy install ca-certificates curl python-gpgme dropbox python3 libatomic1 \
     # Perform image clean up.
     && apt-get -qqy autoclean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
